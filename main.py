@@ -1,9 +1,10 @@
 import shutil
 import urllib
 import random
+
 import requests
-from bs4 import BeautifulSoup
-from antigate import AntiGate
+import bs4
+import antigate
 
 
 def hook_factory(query):
@@ -23,7 +24,7 @@ def crawl_google_pages(query):
                         headers={'User-agent': 'Mozilla/5.0'})
 
     if resp.status_code == 503:
-        bs = BeautifulSoup(resp.text, 'lxml')
+        bs = bs4.BeautifulSoup(resp.text, 'lxml')
 
         img_url = 'http://ipv4.google.com' + bs.find('img')['src']
 
@@ -34,7 +35,7 @@ def crawl_google_pages(query):
         with open('.captcha.jpeg', 'wb') as f:
             shutil.copyfileobj(req_img.raw, f)
 
-        captcha = str(AntiGate('5fe97f0269baab13414a37f10e240925', '.captcha.jpeg'))
+        captcha = str(antigate.AntiGate('5fe97f0269baab13414a37f10e240925', '.captcha.jpeg'))
         print 'capcha:', captcha
 
         cookies = {'GOOGLE_ABUSE_EXEMPTION': req_img.cookies['GOOGLE_ABUSE_EXEMPTION']}
@@ -56,10 +57,10 @@ def crawl_google_pages(query):
 if __name__ == '__main__':
     pages = ['hallo+world', 'halo', 'hola', 'bla-bla-bla', 'qwerty', 'lalala', 'gsa', 'mint', 'turbo', 'python']
     #pages = ['hola', 'hallo+world']
-    for _ in range(3):
+    for _ in range(100):
         response = crawl_google_pages(random.choice(pages))
         print 'status:', response.status_code
 
-        bs = BeautifulSoup(response.text, 'lxml')
+        bs = bs4.BeautifulSoup(response.text, 'lxml')
         urls = bs.find_all('h3', 'r')
         print 'count url:', len(urls)
