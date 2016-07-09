@@ -55,12 +55,14 @@ def crawl_google_pages(query):
 
 
 if __name__ == '__main__':
-    pages = ['hallo+world', 'halo', 'hola', 'bla-bla-bla', 'qwerty', 'lalala', 'gsa', 'mint', 'turbo', 'python']
+    pages = ['hallo+world', 'halo', 'hola', 'bla-bla-bla', 'qwerty', 'lalala', 'gsa', 'mint', 'turbo', 'python',
+             'django', 'flask', 'tornado']
     #pages = ['hola', 'hallo+world']
-    for _ in range(100):
+    for _ in range(1000):
         response = crawl_google_pages(random.choice(pages))
         print 'status:', response.status_code
 
         bs = bs4.BeautifulSoup(response.text, 'lxml')
         urls = bs.find_all('h3', 'r')
         print 'count url:', len(urls)
+        print 
